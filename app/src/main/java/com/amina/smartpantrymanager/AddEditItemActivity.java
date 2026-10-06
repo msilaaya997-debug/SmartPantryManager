@@ -94,6 +94,7 @@ public class AddEditItemActivity extends AppCompatActivity {
 
         if (isEditMode) {
             PantryItem item = new PantryItem(itemId, name, quantity, unit, expiry);
+
             dbHelper.updateItem(item);
             Toast.makeText(this, "Item updated", Toast.LENGTH_SHORT).show();
         } else {

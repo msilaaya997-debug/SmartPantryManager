@@ -6,7 +6,7 @@ import com.amina.smartpantrymanager.models.Recipe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeMatcher {
+public class  RecipeMatcher {
 
     /**
      * Returns only the recipes that can be made using STRICTLY what's in the
