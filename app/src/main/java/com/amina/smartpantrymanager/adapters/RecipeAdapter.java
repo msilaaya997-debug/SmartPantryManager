@@ -1,5 +1,7 @@
 package com.amina.smartpantrymanager.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,38 +11,60 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amina.smartpantrymanager.R;
+import com.amina.smartpantrymanager.RecipeDetailActivity;
 import com.amina.smartpantrymanager.models.Recipe;
 
 import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
+    private final Context context;
     private final List<Recipe> recipeList;
-    private final OnRecipeClickListener listener;
 
-    public interface OnRecipeClickListener {
-        void onRecipeClick(Recipe recipe);
-    }
-
-    public RecipeAdapter(List<Recipe> recipeList, OnRecipeClickListener listener) {
+    public RecipeAdapter(Context context, List<Recipe> recipeList) {
+        this.context = context;
         this.recipeList = recipeList;
-        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
+    public RecipeViewHolder onCreateViewHolder(
+            @NonNull ViewGroup parent,
+            int viewType) {
+
+        View view = LayoutInflater.from(context)
                 .inflate(R.layout.item_recipe, parent, false);
+
         return new RecipeViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
+    public void onBindViewHolder(
+            @NonNull RecipeViewHolder holder,
+            int position) {
+
         Recipe recipe = recipeList.get(position);
+
+        // Display recipe name
         holder.recipeName.setText(recipe.getName());
-        holder.recipeIngredientsPreview.setText(String.join(", ", recipe.getIngredients()));
-        holder.itemView.setOnClickListener(v -> listener.onRecipeClick(recipe));
+
+        // Display recipe ingredients
+        holder.recipeIngredientsPreview.setText(
+                String.join(", ", recipe.getIngredients())
+        );
+
+        // Open recipe details when the recipe is clicked
+        holder.itemView.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    context,
+                    RecipeDetailActivity.class
+            );
+
+            intent.putExtra("recipe_id", recipe.getId());
+
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -48,13 +72,18 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         return recipeList.size();
     }
 
-    static class RecipeViewHolder extends RecyclerView.ViewHolder {
-        TextView recipeName, recipeIngredientsPreview;
+    public static class RecipeViewHolder extends RecyclerView.ViewHolder {
+
+        TextView recipeName;
+        TextView recipeIngredientsPreview;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
+
             recipeName = itemView.findViewById(R.id.recipeName);
-            recipeIngredientsPreview = itemView.findViewById(R.id.recipeIngredientsPreview);
+
+            recipeIngredientsPreview =
+                    itemView.findViewById(R.id.recipeIngredientsPreview);
         }
     }
 }
